@@ -13,11 +13,23 @@ add_executable(${CMAKE_PROJECT_NAME})
 
 pico_generate_pio_header(${CMAKE_PROJECT_NAME} ${CMAKE_CURRENT_LIST_DIR}/src/template.pio)
 
-target_sources(${CMAKE_PROJECT_NAME} PRIVATE src/main.cpp)
+target_sources(${CMAKE_PROJECT_NAME} PRIVATE
+	src/main.cpp
+	src/led.cpp
+)
 
-target_link_libraries(${CMAKE_PROJECT_NAME} pico_stdlib hardware_pio)
+if("${PICO_BOARD}" MATCHES "pico_w")
+	target_link_libraries(${CMAKE_PROJECT_NAME}
+		pico_stdlib
+		pico_cyw43_arch_none
+		hardware_pio)
+else()
+	target_link_libraries(${CMAKE_PROJECT_NAME}
+		pico_stdlib
+		hardware_pio)
+endif()
 
 pico_enable_stdio_usb(${CMAKE_PROJECT_NAME} 1)
-#pico_enable_stdio_uart(${CMAKE_PROJECT_NAME} 1)
 
+# pico_enable_stdio_uart(${CMAKE_PROJECT_NAME} 1)
 pico_add_extra_outputs(${CMAKE_PROJECT_NAME})
